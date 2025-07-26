@@ -71,7 +71,7 @@ void preprocess_macros(FILE *input, FILE *output) {
         const char *cursor = line;
         char token[MAX_MACRO_NAME];
 
-        skip_whitespace(&cursor);
+        cursor = skip_whitespace(cursor);
 
         if (is_comment_or_empty(cursor)) {
             if (!inside_macro) fputs(line, output);

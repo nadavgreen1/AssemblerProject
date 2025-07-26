@@ -14,7 +14,7 @@ int count_extra_words(int src_mode, int dst_mode, int num_operands) {
     if (num_operands == 0) return 0;
 
     if (num_operands == 1) {
-        return (dst_mode == ADDR_MATRIX) ? 3 : 1;
+        return (dst_mode == ADDR_MATRIX) ? 2 : 1;
     }
 
     if (num_operands == 2) {
@@ -22,8 +22,8 @@ int count_extra_words(int src_mode, int dst_mode, int num_operands) {
             return 1;
 
         int count = 0;
-        count += (src_mode == ADDR_MATRIX) ? 3 : 1;
-        count += (dst_mode == ADDR_MATRIX) ? 3 : 1;
+        count += (src_mode == ADDR_MATRIX) ? 2 : 1;
+        count += (dst_mode == ADDR_MATRIX) ? 2 : 1;
 
         return count;
     }
@@ -140,8 +140,8 @@ void second_pass(FILE *source_file) {
 
         int added = count_extra_words(src_mode, dst_mode, info->num_operands);
         if (info->num_operands == 2) {
-            printf(">> Operand 1 adds %d word(s)\n", (src_mode == ADDR_MATRIX) ? 3 : 1);
-            printf(">> Operand 2 adds %d word(s)\n", (dst_mode == ADDR_MATRIX) ? 3 : (dst_mode == ADDR_REGISTER && src_mode == ADDR_MATRIX) ? 0 : 1);
+            printf(">> Operand 1 adds %d word(s)\n", (src_mode == ADDR_MATRIX) ? 2 : 1);
+            printf(">> Operand 2 adds %d word(s)\n", (dst_mode == ADDR_MATRIX) ? 2 : (dst_mode == ADDR_REGISTER && src_mode == ADDR_REGISTER) ? 0 : 1);
         } else if (info->num_operands == 1) {
             printf(">> Operand adds %d word(s)\n", added);
         }

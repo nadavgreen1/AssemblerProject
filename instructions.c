@@ -141,14 +141,12 @@ void encode_operand(const char *operand, int mode, int is_source, int line_numbe
 
         int r1 = reg1[1] - '0';
         int r2 = reg2[1] - '0';
-        printf("Before IC: %d\n", IC);
-
-        add_memory_word(IC++, r1 & 0x3FF, ARE_RELOCATABLE, 0, NULL);
-        printf("After IC: %d\n", IC);
+        int encoded = (r1 << 6) | (r2 << 2);
 
         printf("Before IC: %d\n", IC);
 
-        add_memory_word(IC++, r2 & 0x3FF, ARE_RELOCATABLE, 0, NULL);
+        add_memory_word(IC++, encoded & 0x3FF, ARE_RELOCATABLE, 0, NULL);
+
         printf("After IC: %d\n", IC);
 
     }

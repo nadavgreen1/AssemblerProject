@@ -51,3 +51,25 @@ void reset_memory_image() {
     }
     memory_word_count = 0;
 }
+
+
+/**
+ * Shifts all data words so that their addresses come after the final
+ * instruction counter (ICF). This function should be called after the
+ * first pass once ICF is known.
+ */
+void update_data_word_addresses(int icf) {
+    int offset = icf - MEMORY_START; /* number of code words */
+    int i;
+
+    /* Shift from the end to avoid overwriting when source and destination
+     * ranges overlap. At this stage memory_image contains only data words
+     * stored starting at MEMORY_START.
+     */
+    for (i = memory_word_count - 1; i >= 0; i--) {
+        memory_image[i + offset] = memory_image[i];
+        memory_image[i + offset].address += offset;
+    }
+
+    memory_word_count += offset;
+}

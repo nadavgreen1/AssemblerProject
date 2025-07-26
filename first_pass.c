@@ -16,8 +16,12 @@
 #define MAX_OPERANDS 100
 
 void store_data_word(int value) {
-    printf("[DATA DEBUG] store_data_word: address = %d, value = %d\n", IC + DC, value);
-    add_memory_word(IC + DC, value, ARE_ABSOLUTE, 0, NULL);
+    /* Store data words relative only to DC so they can be shifted after the
+ * first pass once the final instruction count (ICF) is known.  The actual
+ * address written to the memory image at this stage is MEMORY_START + DC.
+ */
+    printf("[DATA DEBUG] store_data_word: address = %d, value = %d\n", MEMORY_START + DC, value);
+    add_memory_word(MEMORY_START + DC, value, ARE_ABSOLUTE, 0, NULL);
     DC++;
 }
 
@@ -106,9 +110,9 @@ int calc_instruction_size(InstructionInfo *info, const char *op1, const char *op
         size += 1;
     } else {
         if (info->num_operands >= 1)
-            size += (mode1 == ADDR_MATRIX) ? 3 : 1;
+            size += (mode1 == ADDR_MATRIX) ? 2 : 1;
         if (info->num_operands == 2)
-            size += (mode2 == ADDR_MATRIX) ? 3 : 1;
+            size += (mode2 == ADDR_MATRIX) ? 2 : 1;
     }
 
     return size;
@@ -156,7 +160,9 @@ void first_pass(FILE *source_file) {
                     report_error("Duplicate label", line_number);
                     continue;
                 }
-                add_symbol(label, IC + DC, DATA_SYMBOL);
+                /* Data labels are stored relative to DC and adjusted after
+  * the first pass. */
+                add_symbol(label, DC, DATA_SYMBOL);
             }
             if (is_macro_call(token)) {
                 /* Skip macro calls in first pass – their lines already expanded */
@@ -171,7 +177,7 @@ void first_pass(FILE *source_file) {
                     report_error("Duplicate label", line_number);
                     continue;
                 }
-                add_symbol(label, IC + DC, DATA_SYMBOL);
+                add_symbol(label, DC, DATA_SYMBOL);
             }
             if (is_macro_call(token)) {
                 /* Skip macro calls in first pass – their lines already expanded */
@@ -200,7 +206,7 @@ void first_pass(FILE *source_file) {
                     report_error("Duplicate label", line_number);
                     continue;
                 }
-                add_symbol(label, IC + DC, DATA_SYMBOL);
+                add_symbol(label, DC, DATA_SYMBOL);
             }
             if (is_macro_call(token)) {
                 /* Skip macro calls in first pass – their lines already expanded */
@@ -282,5 +288,11 @@ void first_pass(FILE *source_file) {
     }
 #endif
 
-    update_data_symbols(IC);
+    /* Final instruction counter after first pass */
+    ICF = IC;
+
+    /* Adjust data symbol addresses and shift stored data words so that they
+     * appear after the code section. */
+    update_data_symbols(ICF);
+    update_data_word_addresses(ICF);
 }

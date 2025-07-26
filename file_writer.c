@@ -76,8 +76,12 @@ void write_output_files(const char *base_file_name) {
 
     /* Write CODE words */
     for (i = 0; i < IC - MEMORY_START; i++) {
-        to_base4_string(memory_image[i].address, addr_base4);
-        to_base4_string(memory_image[i].value, val_base4);
+        /*
+         * According to the expected .ob format the address column should not
+         * contain a leading 'a'. We therefore print addresses using the
+         * trimmed variant while keeping the values padded to five characters.
+         */
+        to_base4_trimmed(memory_image[i].address, addr_base4);        to_base4_string(memory_image[i].value, val_base4);
         fprintf(ob_fp, "%s %s\n", addr_base4, val_base4);
         printf("MEM[%d] = %d\n", memory_image[i].address, memory_image[i].value);
 
@@ -85,7 +89,7 @@ void write_output_files(const char *base_file_name) {
 
     /* Write DATA words */
     for (i = IC - MEMORY_START; i < memory_word_count; i++) {
-        to_base4_string(memory_image[i].address, addr_base4);
+        to_base4_trimmed(memory_image[i].address, addr_base4);
         to_base4_string(memory_image[i].value, val_base4);
         fprintf(ob_fp, "%s %s\n", addr_base4, val_base4);
     }

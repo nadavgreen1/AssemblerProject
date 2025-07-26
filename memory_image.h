@@ -23,5 +23,6 @@ extern int memory_word_count;
 
 void add_memory_word(int address, int value, int are, int is_external, const char *external_label);
 void reset_memory_image();
+void update_data_word_addresses(int icf);
 
 #endif /* MEMORY_IMAGE_H */
