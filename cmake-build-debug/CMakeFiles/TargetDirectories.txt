@@ -1,0 +1,3 @@
+C:/Users/NADAV/CLionProjects/assembler project c nadav green/cmake-build-debug/CMakeFiles/assembler.dir
+C:/Users/NADAV/CLionProjects/assembler project c nadav green/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/NADAV/CLionProjects/assembler project c nadav green/cmake-build-debug/CMakeFiles/rebuild_cache.dir
