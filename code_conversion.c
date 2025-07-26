@@ -26,7 +26,6 @@ int to_unsigned_10bit(int value) {
 
 
 /**
- * Converts a 12-bit signed number to base-4 (a–d) string.
  * @param num The number (can be negative or positive)
  * @param buffer Output string (must be at least 7 bytes)
  */

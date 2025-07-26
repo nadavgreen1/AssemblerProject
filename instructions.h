@@ -4,8 +4,8 @@
 typedef enum {
     ADDR_IMMEDIATE = 0,
     ADDR_DIRECT = 1,
-    ADDR_REGISTER = 3,
-    ADDR_MATRIX = 4
+    ADDR_REGISTER = 2,
+    ADDR_MATRIX = 3
 } AddressingMode;
 
 typedef struct {

@@ -91,7 +91,7 @@ void encode_operand(const char *operand, int mode, int is_source, int line_numbe
         int encoded = is_source ? (reg_num << 6) : (reg_num << 2);
         printf("Before IC: %d\n", IC);
 
-        add_memory_word(IC++, encoded & 0x3FF, ARE_RELOCATABLE, 0, NULL);
+        add_memory_word(IC++, encoded & 0x3FF, ARE_ABSOLUTE, 0, NULL);
         printf("After IC: %d\n", IC);
 
     } else if (mode == ADDR_MATRIX) {
@@ -145,7 +145,7 @@ void encode_operand(const char *operand, int mode, int is_source, int line_numbe
 
         printf("Before IC: %d\n", IC);
 
-        add_memory_word(IC++, encoded & 0x3FF, ARE_RELOCATABLE, 0, NULL);
+        add_memory_word(IC++, encoded & 0x3FF, ARE_ABSOLUTE, 0, NULL);
 
         printf("After IC: %d\n", IC);
 

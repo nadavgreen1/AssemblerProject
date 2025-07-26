@@ -1,5 +1,8 @@
 /* file_writer.c */
-/* Handles writing of output files after both passes */
+/* Handles writing of output files after both passes.
+ * The .ob file stores each memory word as a 12-bit value where the
+ * two least significant bits are the ARE flags. */
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,16 +84,25 @@ void write_output_files(const char *base_file_name) {
          * contain a leading 'a'. We therefore print addresses using the
          * trimmed variant while keeping the values padded to five characters.
          */
-        to_base4_trimmed(memory_image[i].address, addr_base4);        to_base4_string(memory_image[i].value, val_base4);
+        to_base4_trimmed(memory_image[i].address, addr_base4);
+        int encoded = memory_image[i].value;
+        if ((encoded & 0x3) != memory_image[i].are) {
+            encoded = ((encoded & 0x3FF) << 2) | (memory_image[i].are & 0x3);
+        }
+        to_base4_string(encoded, val_base4);
         fprintf(ob_fp, "%s %s\n", addr_base4, val_base4);
-        printf("MEM[%d] = %d\n", memory_image[i].address, memory_image[i].value);
+        printf("MEM[%d] = %d\n", memory_image[i].address, encoded);
 
     }
 
     /* Write DATA words */
     for (i = IC - MEMORY_START; i < memory_word_count; i++) {
         to_base4_trimmed(memory_image[i].address, addr_base4);
-        to_base4_string(memory_image[i].value, val_base4);
+        int encoded = memory_image[i].value;
+        if ((encoded & 0x3) != memory_image[i].are) {
+            encoded = ((encoded & 0x3FF) << 2) | (memory_image[i].are & 0x3);
+        }
+        to_base4_string(encoded, val_base4);
         fprintf(ob_fp, "%s %s\n", addr_base4, val_base4);
     }
 

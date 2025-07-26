@@ -151,7 +151,7 @@ void second_pass(FILE *source_file) {
                 int reg1 = operand1[1] - '0';
                 int reg2 = operand2[1] - '0';
                 int encoded = (reg1 << 6) | (reg2 << 2);
-                add_memory_word(IC++, encoded, ARE_RELOCATABLE, 0, NULL);
+                add_memory_word(IC++, encoded, ARE_ABSOLUTE, 0, NULL);
                 printf(">> Added both registers in 1 word\n");
             } else {
                 encode_operand(operand1, src_mode, 1, line_number);
