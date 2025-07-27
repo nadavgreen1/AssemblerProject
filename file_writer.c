@@ -98,10 +98,8 @@ void write_output_files(const char *base_file_name) {
     /* Write DATA words */
     for (i = IC - MEMORY_START; i < memory_word_count; i++) {
         to_base4_trimmed(memory_image[i].address, addr_base4);
-        int encoded = memory_image[i].value;
-        if ((encoded & 0x3) != memory_image[i].are) {
-            encoded = ((encoded & 0x3FF) << 2) | (memory_image[i].are & 0x3);
-        }
+        /* Data words are stored as raw 10-bit values without ARE bits */
+        int encoded = memory_image[i].value & 0x3FF;
         to_base4_string(encoded, val_base4);
         fprintf(ob_fp, "%s %s\n", addr_base4, val_base4);
     }
