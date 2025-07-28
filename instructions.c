@@ -68,11 +68,11 @@ int detect_addressing_mode(const char *operand) {
 void encode_operand(const char *operand, int mode, int is_source, int line_number) {
     if (mode == ADDR_IMMEDIATE) {
         int value = atoi(operand + 1);
+        int encoded = ((to_unsigned_10bit(value) << 2) | ARE_ABSOLUTE) & 0x3FF;
+
         printf("Before IC: %d\n", IC);
 
-        add_memory_word(IC++, to_unsigned_10bit(value), ARE_ABSOLUTE, 0, NULL);
-        printf("After IC: %d\n", IC);
-
+        add_memory_word(IC++, encoded, ARE_ABSOLUTE, 0, NULL);
     } else if (mode == ADDR_DIRECT) {
         Symbol *sym = find_symbol(operand);
         if (!sym) {
@@ -81,11 +81,10 @@ void encode_operand(const char *operand, int mode, int is_source, int line_numbe
         }
         int is_ext = (sym->type == EXTERNAL_SYMBOL);
         int are_bits = is_ext ? ARE_EXTERNAL : ARE_RELOCATABLE;
+        int encoded = (((sym->address & 0xFF) << 2) | (are_bits & 0x3)) & 0x3FF;
         printf("Before IC: %d\n", IC);
 
-        add_memory_word(IC++, sym->address & 0x3FF, are_bits, is_ext, is_ext ? sym->name : NULL);
-        printf("After IC: %d\n", IC);
-
+        add_memory_word(IC++, encoded, are_bits, is_ext, is_ext ? sym->name : NULL);
     } else if (mode == ADDR_REGISTER) {
         int reg_num = operand[1] - '0';
         int encoded = is_source ? (reg_num << 6) : (reg_num << 2);
@@ -134,11 +133,9 @@ void encode_operand(const char *operand, int mode, int is_source, int line_numbe
         }
         int is_ext = sym->type == EXTERNAL_SYMBOL;
         int are_bits = is_ext ? ARE_EXTERNAL : ARE_RELOCATABLE;
-        printf("Before IC: %d\n", IC);
+        int encoded_label = (((sym->address & 0xFF) << 2) | (are_bits & 0x3)) & 0x3FF;        printf("Before IC: %d\n", IC);
 
-        add_memory_word(IC++, sym->address & 0x3FF, are_bits, is_ext, is_ext ? sym->name : NULL);
-        printf("After IC: %d\n", IC);
-
+        add_memory_word(IC++, encoded_label, are_bits, is_ext, is_ext ? sym->name : NULL);
         int r1 = reg1[1] - '0';
         int r2 = reg2[1] - '0';
         int encoded = (r1 << 6) | (r2 << 2);

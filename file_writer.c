@@ -85,10 +85,7 @@ void write_output_files(const char *base_file_name) {
          * trimmed variant while keeping the values padded to five characters.
          */
         to_base4_trimmed(memory_image[i].address, addr_base4);
-        int encoded = memory_image[i].value;
-        if ((encoded & 0x3) != memory_image[i].are) {
-            encoded = ((encoded & 0x3FF) << 2) | (memory_image[i].are & 0x3);
-        }
+        int encoded = memory_image[i].value & 0x3FF;
         to_base4_string(encoded, val_base4);
         fprintf(ob_fp, "%s %s\n", addr_base4, val_base4);
         printf("MEM[%d] = %d\n", memory_image[i].address, encoded);
